@@ -11,7 +11,7 @@ public class Controller {
     @Autowired
     private UserService userservice;
 
-    @RequestMapping("/retrieveAllData")
+    @RequestMapping("/retrieveAllDat")
     public List<UserData> retrieveAllData() {
         return userservice.RetrieveAllData();
     }
