@@ -55,7 +55,7 @@ public class UserServiceTest extends DatabaseBaseTest {
 
 
     @MockBean
-    private  AwsS3Utilities awsS3Utilities;
+    private AwsS3Utilities awsS3Utilities;
     private User user;
     private User loggedUser;
     private Company company;
@@ -102,20 +102,17 @@ public class UserServiceTest extends DatabaseBaseTest {
     }
 
 
-
     @Test
-    public void testListAllUserRoles()  {
-        List<String> userRole  = Collections.singletonList(user.getRole());
-        when(userRepository.findAll(anyString(),any(),any(Map.class))).thenReturn(Collections.singletonList(user.getRole()));
+    public void testListAllUserRoles() {
+        List<String> userRole = Collections.singletonList(user.getRole());
+        when(userRepository.findAll(anyString(), any(), any(Map.class))).thenReturn(Collections.singletonList(user.getRole()));
         assertNotNull(userService.listAllUserRoles(user));
-        assertEquals(userService.listAllUserRoles(user) , userRole);
+        assertEquals(userService.listAllUserRoles(user), userRole);
     }
 
 
-
-
     @Test
-    public void testFindLoggedInUser(){
+    public void testFindLoggedInUser() {
         when(userRepository.findLoggedInUser(anyString())).thenReturn(loggedUser);
         assertNotNull(userService.findLoggedInUser("testUser2@gmail.com"));
         assertEquals(userService.findLoggedInUser("testUser2@gmail.com").getFirstName(), "Test");
@@ -123,34 +120,9 @@ public class UserServiceTest extends DatabaseBaseTest {
 
     @Test
     public void testDeleteUser() throws DepUnprocessableException {
-        when(userRepository.save(anyString(),any(Map.class))).thenReturn(1);
-        assertEquals(userService.deleteUser(user , loggedUser), 1);
+        when(userRepository.save(anyString(), any(Map.class))).thenReturn(1);
+        assertEquals(userService.deleteUser(user, loggedUser), 1);
     }
 
-
-    public Optional<User> isRecordGoodToUpdate(User user) {
-        User existingUser = repository.findById(user.getId());
-        User validUser = null;
-        if (user.getId() != null) {
-            if (existingUser.getEmail().equals(user.getEmail())) { //No changes in email
-                validUser = existingUser;
-            } else {
-                Map<String, Object> input = Map.of(UserRepository.EMAIL, user.getEmail());
-                Integer count = repository.find(UserRepository.EMAIL_ID_VALIDATION_COUNT, Integer.class, input);
-                if (count == null || count == 0) { //New email id does not exist in system
-                    validUser = existingUser;
-                }
-            }
-        }
-        return Optional.ofNullable(validUser);
-    }
-
-    @Test
-    public void testIsRecordGoodToUpdate(){
-        when(userRepository.findById(any())).thenReturn(user);
-
-
-
-    }
 
 }
